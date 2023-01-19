@@ -1,5 +1,8 @@
 # Multi-objective Bayesian optimization with heuristic objectives
-This repository contains the code implementing MANATEE used for the analyses in the associated paper. 
+
+*This is a fork of the original MANATEE repository to analyze IMC workshop data.*
+
+This repository contains the code implementing MANATEE used for the analyses in the associated paper.
 
 MANATEE (Multi-objective bAyesiaN optimizAtion wiTh hEuristic objEctives) is a multi-objective Bayesian optimization method, which automatically up- or downweights heuristic objectives based on the properties of their posterior functional form. These properties are specified as desirable or non-desirable *behaviours*, which reflect user's expectations of what a useful heuristic objective should look like. We propose for MANATEE to be used for parameter optimization in biomedical and molecular data analysis pipelines, where objectives being optimized correspond to heuristic measures of a pipeline's success. We used MANATEE to optimize the cofactor normalization parameter for the analysis of imaging mass cytometry (IMC) data and the proportion of highly variable genes for the analysis of single-cell RNA-sequencing (scRNA-seq) data.
 
@@ -22,7 +25,7 @@ MANATEE (Multi-objective bAyesiaN optimizAtion wiTh hEuristic objEctives) is a m
 
 USeMO should be available in the virtual environment under the name `usemo`.
 
-## Quickstart 
+## Quickstart
 
 MANATEE is run by executing the script `mobo_experiment.py` with corresponding arguments. The code supports three experiments discussed in the paper (toy, IMC, scRNA-seq) by implementing the corresponding pipelines required for new acquisitions. MANATEE can be executed by specifying the experiment and the parameter optimization bounds, for example:
 

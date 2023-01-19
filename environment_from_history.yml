@@ -1,0 +1,32 @@
+name: manatee
+channels:
+  - pytorch
+  - nvidia
+  - gpytorch
+  - conda-forge
+dependencies:
+  - torchvision
+  - botorch
+  - pytorch-cuda=11.7
+  - pytorch
+  - gpytorch
+  - torchaudio
+  - scipy
+  - wandb
+  - leidenalg
+  - scikit-learn
+  - numpy
+  - pygmo
+  - matplotlib
+  - scanpy
+  - mamba
+  - platypus-opt
+  - ca-certificates
+  - certifi
+  - openssl
+  - black
+  - flake8
+  - isort
+  - mypy
+  - pre-commit
+prefix: /home/jonas/miniconda3/envs/manatee
