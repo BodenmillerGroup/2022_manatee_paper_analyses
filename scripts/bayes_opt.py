@@ -4,16 +4,17 @@ import scipy
 import torch
 import torch.nn.functional as F
 from botorch import fit_gpytorch_model
-from botorch.sampling.samplers import SobolQMCNormalSampler
+from botorch.sampling.normal import SobolQMCNormalSampler
 from gpytorch.utils import errors
 from platypus import NSGAII, Problem, Real
-from usemo.acquisitions import TS, compute_beta
-from usemo.model import GaussianProcess
 
 import acquis_func as acq
 import gp_derivative as gp_dx
 import gp_inference as gp
 import plotting as plotting
+
+from .usemo.acquisitions import TS, compute_beta
+from .usemo.model import GaussianProcess
 
 plt.style.use("ggplot")
 
