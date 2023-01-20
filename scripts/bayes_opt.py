@@ -12,9 +12,8 @@ import acquis_func as acq
 import gp_derivative as gp_dx
 import gp_inference as gp
 import plotting as plotting
-
-from .usemo.acquisitions import TS, compute_beta
-from .usemo.model import GaussianProcess
+from usemo.acquisitions import TS, compute_beta
+from usemo.model import GaussianProcess
 
 plt.style.use("ggplot")
 

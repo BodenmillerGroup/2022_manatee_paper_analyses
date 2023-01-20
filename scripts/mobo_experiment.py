@@ -60,7 +60,7 @@ def log_settings(
     ucb_scal,
 ):
 
-    cachedir = Path("~/cache_" + experiment)
+    cachedir = Path("../data/cache/" + experiment)
     cachedir.mkdir(exist_ok=True, parents=True)
     memory = Memory(cachedir, verbose=0)
 
