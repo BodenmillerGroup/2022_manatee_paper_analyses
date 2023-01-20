@@ -291,6 +291,16 @@ def bayes_opt_crossval(
                 log_dict[f"ARI_test/Fold {fold}/{wandb_plot_title}"] = ari_test.item()
                 log_dict[f"NMI_test/Fold {fold}/{wandb_plot_title}"] = nmi_test.item()
 
+            elif experiment == "imc_workflow":
+                print(f"Next point in original scale: {x_next_range.item():.3f}")
+                f_next, ari, nmi = true_f(x_next_range, data_train, adata_train)
+                log_dict[f"ARI/Fold {fold}/{wandb_plot_title}"] = ari.item()
+                log_dict[f"NMI/Fold {fold}/{wandb_plot_title}"] = nmi.item()
+
+                _, ari_test, nmi_test = true_f(x_next_range, data_test, adata_test)
+                log_dict[f"ARI_test/Fold {fold}/{wandb_plot_title}"] = ari_test.item()
+                log_dict[f"NMI_test/Fold {fold}/{wandb_plot_title}"] = nmi_test.item()
+
             else:
                 print(f"{experiment} is an invalid experiment type.")
 

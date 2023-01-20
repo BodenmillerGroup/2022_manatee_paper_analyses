@@ -330,6 +330,12 @@ def bayes_opt(
                 log_dict[f"ARI/{wandb_plot_title}"] = ari.item()
                 log_dict[f"NMI/{wandb_plot_title}"] = nmi.item()
 
+            elif experiment == "imc_workflow":
+                print(f"Next point in original scale: {x_next_range.item():.3f}")
+                f_next, ari, nmi = true_f(x_next_range, data, adata)
+                log_dict[f"ARI/{wandb_plot_title}"] = ari.item()
+                log_dict[f"NMI/{wandb_plot_title}"] = nmi.item()
+
             else:
                 print(f"{experiment} is an invalid experiment type.")
 
@@ -435,6 +441,12 @@ def bayes_opt_random(
             elif experiment == "citeseq":
                 print(f"Next point in original scale: {x_next_range.item():.3f}")
                 f_next, ari, nmi, _ = true_f(x_next_range, data, adata)
+                log_dict["ARI/random acquisition"] = ari.item()
+                log_dict["NMI/random acquisition"] = nmi.item()
+
+            elif experiment == "imc_workflow":
+                print(f"Next point in original scale: {x_next_range.item():.3f}")
+                f_next, ari, nmi = true_f(x_next_range, data, adata)
                 log_dict["ARI/random acquisition"] = ari.item()
                 log_dict["NMI/random acquisition"] = nmi.item()
 
@@ -547,6 +559,12 @@ def bayes_opt_botorch(
                     log_dict["ARI/botorch"] = ari.item()
                     log_dict["NMI/botorch"] = nmi.item()
 
+                elif experiment == "imc_workflow":
+                    print(f"Next point in original scale: {x_next_range.item():.3f}")
+                    f_next, ari, nmi = true_f(x_next_range, data, adata)
+                    log_dict["ARI/botorch"] = ari.item()
+                    log_dict["NMI/botorch"] = nmi.item()
+
                 else:
                     print(f"{experiment} is an invalid experiment type.")
 
@@ -652,6 +670,12 @@ def bayes_opt_qparego(
                 elif experiment == "citeseq":
                     print(f"Next point in original scale: {x_next_range.item():.3f}")
                     f_next, ari, nmi, _ = true_f(x_next_range, data, adata)
+                    log_dict["ARI/qparego"] = ari.item()
+                    log_dict["NMI/qparego"] = nmi.item()
+
+                elif experiment == "imc_workflow":
+                    print(f"Next point in original scale: {x_next_range.item():.3f}")
+                    f_next, ari, nmi = true_f(x_next_range, data, adata)
                     log_dict["ARI/qparego"] = ari.item()
                     log_dict["NMI/qparego"] = nmi.item()
 
@@ -804,6 +828,12 @@ def bayes_opt_usemo(
             elif experiment == "citeseq":
                 print(f"Next point in original scale: {x_next_range.item():.3f}")
                 f_next, ari, nmi, _ = true_f(x_next_range, data, adata)
+                log_dict["ARI/usemo"] = ari.item()
+                log_dict["NMI/usemo"] = nmi.item()
+
+            elif experiment == "imc_workflow":
+                print(f"Next point in original scale: {x_next_range.item():.3f}")
+                f_next, ari, nmi = true_f(x_next_range, data, adata)
                 log_dict["ARI/usemo"] = ari.item()
                 log_dict["NMI/usemo"] = nmi.item()
 

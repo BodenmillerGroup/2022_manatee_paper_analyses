@@ -99,6 +99,8 @@ def log_settings(
             project_name = "imc-mobo"
         elif experiment == "citeseq":
             project_name = "citeseq-mobo"
+        elif experiment == "imc_workflow":
+            project_name = "imc_workflow-mobo"
 
         wandb.init(
             # Set the project where this run will be logged
@@ -417,6 +419,10 @@ def main_crossval(
         )
     elif experiment == "citeseq":
         train_y, ari, nmi, hvgs = citeseq_setup.true_f(
+            train_x_full_range, data1_train, data2_train
+        )
+    elif experiment == "imc_workflow":
+        train_y, ari, nmi = imc_workflow_setup.true_f(
             train_x_full_range, data1_train, data2_train
         )
 
