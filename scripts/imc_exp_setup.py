@@ -19,6 +19,8 @@ positive_coexpression_pairs = [
 
 
 def load_data():
+    # This function loads jackson-imc dataset.
+
     # Load data
     adata = read_h5ad("basel_zuri.h5ad")
     adata = adata[adata.obs.index.str.contains("Basel"), :]

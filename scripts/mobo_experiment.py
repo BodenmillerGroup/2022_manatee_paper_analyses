@@ -343,7 +343,8 @@ def main(
     elif experiment == "imc_workflow":
         train_y, ari, nmi = imc_workflow_setup.true_f(train_x_full_range, data1, data2)
 
-    # Run a sequence of mobo experiments (w/different strategies) based on "experiment"
+    # Run a sequence of mobo experiments (with different strategies) based on
+    # "experiment"
     dicts_list = []
     success = True
     for strat in strategy:
@@ -373,6 +374,7 @@ def main(
             success = False
         except AssertionError as e:
             print(f"Assertion error\nError: {e}")
+            success = False
 
     mobo_output_dict = {k: v for d in dicts_list for k, v in d.items()}
     return mobo_output_dict, success
@@ -417,12 +419,9 @@ def main_crossval(
         train_y, ari, nmi, hvgs = citeseq_setup.true_f(
             train_x_full_range, data1_train, data2_train
         )
-    elif experiment == "imc_workflow":
-        train_y, ari, nmi = imc_workflow_setup.true_f(
-            train_x_full_range, data1_train, data2_train
-        )
 
-    # Run a sequence of mobo experiments (w/different strategies) based on "experiment"
+    # Run a sequence of mobo experiments (with different strategies) based on
+    # "experiment"
     dicts_list = []
     success = True
     for strat in strategy:
@@ -455,6 +454,7 @@ def main_crossval(
             success = False
         except AssertionError as e:
             print(f"Assertion error\nError: {e}")
+            success = False
 
     mobo_output_dict = {k: v for d in dicts_list for k, v in d.items()}
     return mobo_output_dict, success

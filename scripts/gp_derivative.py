@@ -6,6 +6,8 @@ plt.style.use("ggplot")
 
 
 def rbf(x, y, lengthscale, var=1.0):
+    # Function to compute kernels
+
     if x.ndim == 1:
         x = x[..., None]
     if y.ndim == 1:
@@ -99,6 +101,7 @@ def get_mean_dx(test_x, rbf_lscale, obs_noise, K_T, train_x, train_y, var=1.0):
 
 def get_mean_dx2(dx_zeros, rbf_lscale, obs_noise, K_T, train_x, train_y, var=1.0):
     with torch.no_grad():
+        # n_roots = sum([len(i) for i in dx_zeros])
         mean_dx2 = []
         task = 0
         for task_list in dx_zeros:

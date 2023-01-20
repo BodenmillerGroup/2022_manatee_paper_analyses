@@ -91,6 +91,8 @@ def bayes_opt_crossval(
 ):
 
     num_orig_train_pts = train_x.shape[0]
+    # num_Bk = 3
+    # num_tasks = train_y.shape[1]
     acq_f_vals_all = torch.zeros((optimise_iter, 100))
     train_y_original = train_y.detach().clone()
     init_opt_num = 5
@@ -159,6 +161,7 @@ def bayes_opt_crossval(
         with torch.no_grad():
             log_dict = {}
             log_dict["iteration"] = j
+            # log_titles = labels
             if strategy == "manatee":
                 wandb_plot_title = "manatee"
                 # Get inter-task covariance matrix
@@ -195,6 +198,7 @@ def bayes_opt_crossval(
                     task_obs_noises, corr_means, is_max, ablate
                 )
                 lambda_probs = torch.exp(lambda_logits)
+                # partial_lambda = torch.exp(partial_incl_log_probs)
             elif strategy == "random prob":
                 lambda_probs = torch.rand(train_y.shape[1])
                 wandb_plot_title = "random scalarization"
@@ -207,6 +211,9 @@ def bayes_opt_crossval(
 
             # Pass in step t
             acq_params[1] = j + 1
+
+        # Placeholder for the solution's loss
+        # sol_loss = float("Inf")
 
         # Define samples to evalaute acqusition function on
         samples = torch.rand(100, 1)

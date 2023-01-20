@@ -93,13 +93,15 @@ RAW_SAMPLES = 1024
 def optimize_qnehvi_and_get_observation(
     model, train_x, train_obj, sampler, ref_point, standard_bounds
 ):
+    """Optimizes the qEHVI acquisition function,
+    and returns a new candidate and observation."""
     alpha = get_default_partitioning_alpha(train_obj.shape[1])
     # partition non-dominated space into disjoint rectangles
     acq_func = qNoisyExpectedHypervolumeImprovement(
         model=model,
         ref_point=ref_point.tolist(),  # use known reference point
         X_baseline=normalize(train_x, standard_bounds),
-        # prune baseline points that have estimated 0 probability of being Paretooptimal
+        # prune baseline points that have est. zero probability of being Pareto optimal
         prune_baseline=True,
         alpha=alpha,
         sampler=sampler,
@@ -123,6 +125,9 @@ def optimize_qnehvi_and_get_observation(
 def optimize_qnparego_and_get_observation(
     model, train_x, train_obj, sampler, standard_bounds
 ):
+    """Samples a set of random weights for each candidate in the batch, performs
+    sequential greedy optimization of the qNParEGO acquisition function, and returns a
+    new candidate and observation."""
     train_x = normalize(train_x, standard_bounds)
     with torch.no_grad():
         pred = model.posterior(train_x).mean

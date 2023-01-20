@@ -63,7 +63,9 @@ def mc_sample_std(f_pred, p_lambdas, S):
         )
 
         estimated_sum = var_term + 2 * covar_term
-        assert estimated_sum > -1e-4
+        assert (
+            estimated_sum > -1e-4
+        ), "covariance estimate in acq function is negative and too large"
         estimates[s] = torch.sqrt(torch.clamp(estimated_sum, 1e-6, 1e10))
     return torch.mean(estimates)
 

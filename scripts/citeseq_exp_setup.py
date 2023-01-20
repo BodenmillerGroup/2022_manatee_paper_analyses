@@ -1,4 +1,5 @@
 import random
+from collections import defaultdict
 
 import numpy as np
 import pandas as pd
@@ -20,6 +21,7 @@ negative_coexpression_pairs = [
 
 
 def load_data():
+    # This function loads CITE-seq dataset.
 
     # Load data
     adata = sc.read_h5ad("anndata_citseq_rnaseq.h5ad")
@@ -124,7 +126,6 @@ def cluster_test(adata, hvgs, n_neighbors=10, n_pcs=40, resolution=0.8):
 # clustering).
 def true_f(proportions, adata, Y):
     results = {}
-    from collections import defaultdict
 
     results_list = defaultdict(list)
 
@@ -221,7 +222,9 @@ def true_f(proportions, adata, Y):
 
 
 def probe_test(proportions, adata, Y, hvgs):
-    pass
+    # results = {}
+
+    # results_list = defaultdict(list)
 
     ari = []
     nmi = []

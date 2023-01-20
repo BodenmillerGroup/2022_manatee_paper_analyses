@@ -93,6 +93,7 @@ def bayes_opt(
 ):
 
     num_orig_train_pts = train_x.shape[0]
+    # num_Bk = 3
     num_tasks = train_y.shape[1]
     acq_f_vals_all = torch.zeros((optimise_iter, 100))
     train_y_original = train_y.detach().clone()
@@ -242,6 +243,9 @@ def bayes_opt(
 
             # Pass in step t
             acq_params[1] = j + 1
+
+        # Placeholder for the solution's loss
+        # sol_loss = float("Inf")
 
         # Define samples to evalaute acqusition function on
         samples = torch.rand(100, 1)
@@ -403,6 +407,8 @@ def bayes_opt_random(
             log_dict = {}
             log_dict["iteration"] = j
             if plot:
+                # Define test locations for plotting only
+                # test_x = torch.linspace(0, 1, 100)
                 # Plot GP fit to current training set
                 plotting.plot_data_sampled(train_x, train_y, num_orig_train_pts, labels)
 
@@ -468,8 +474,11 @@ def bayes_opt_botorch(
     plot=False,
     gp_fitting_iter=5,
 ):
+    # Run botorch
 
+    # num_orig_train_pts = train_x.shape[0]
     train_y_original = train_y.detach().clone()
+    # num_tasks = train_y.shape[1]
     output_dict = {}
 
     for j in range(optimise_iter):
@@ -577,7 +586,9 @@ def bayes_opt_qparego(
     gp_fitting_iter=5,
 ):
 
+    # num_orig_train_pts = train_x.shape[0]
     train_y_original = train_y.detach().clone()
+    # num_tasks = train_y.shape[1]
     output_dict = {}
 
     for j in range(optimise_iter):
@@ -686,8 +697,12 @@ def bayes_opt_usemo(
     num_tasks = train_y.shape[1]
     output_dict = {}
 
+    # referencePoint = [1e5] * num_tasks
     bound = [0, 1]
     d = train_x.shape[1]
+    # Fun_bounds = [bound] * d
+    # grid = sobol_seq.i4_sobol_generate(d, 1000, np.random.randint(0, 1000))
+    # design_index = np.random.randint(0, grid.shape[0])
 
     acquisation = TS
     batch_size = 1
