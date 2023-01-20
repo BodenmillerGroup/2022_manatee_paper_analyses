@@ -76,7 +76,7 @@ def get_coexpression(cluster_means, p1, p2, var_names):
 def norm_adata(adata, cofactor=5.0, n_clusters=10):
     # Normalise data with cofactor
     adata.X = np.arcsinh(adata.X / cofactor)
-    km = KMeans(n_clusters, random_state=int(np.random.choice(1000, 1)))
+    km = KMeans(n_clusters, random_state=int(np.random.choice(1000, 1)), n_init=10)
     # Cluster data
     km.fit(adata.X)
     adata.obs["leiden"] = km.labels_
