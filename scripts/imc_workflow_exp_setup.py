@@ -1,27 +1,94 @@
 import random
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import torch
-from scanpy import read_h5ad
+from anndata import AnnData
 from sklearn import metrics
 from sklearn.cluster import KMeans
 
 positive_coexpression_pairs = [
-    ["ECadherin", "panCytokeratin"],
-    ["CD45", "CD20"],
-    ["CD45", "CD68"],
-    ["CD45", "CD3"],
-    ["Vimentin", "Fibronectin"],
-    ["CD19", "CD20"],
-    ["panCytokeratin", "CK5"],
+    ["MPO", "CD15"],
+    ["CD16", "HLADR"],
+    ["CD16", "CD163"],
+    ["CD16", "CD68"],
+    ["CD16", "CD11c"],
+    ["CD16", "CD40"],
+    ["CD16", "CD40"],
+    ["CD16", "CD14"],
+    ["CD16", "CD206"],
+    ["CD38", "CD27"],
+    ["HLADR", "CD163"],
+    ["HLADR", "B2M"],
+    ["HLADR", "CD68"],
+    ["HLADR", "CD11c"],
+    ["HLADR", "CD40"],
+    ["HLADR", "CD4"],
+    ["HLADR", "CD14"],
+    ["HLADR", "CD206"],
+    ["CD27", "CD45RA"],
+    ["CD27", "B2M"],
+    ["CD27", "CD3"],
+    ["CD27", "TCF7"],
+    ["CD27", "CD45RO"],
+    ["CD27", "CD4"],
+    ["CD45RA", "CD20"],
+    ["CD163", "CD68"],
+    ["CD163", "CD11c"],
+    ["CD163", "CD14"],
+    ["CD163", "CD206"],
+    ["B2M", "PDL1"],
+    ["B2M", "CD40"],
+    ["B2M", "CD4"],
+    ["B2M", "CD14"],
+    ["CD68", "CD11c"],
+    ["CD68", "PDL1"],
+    ["CD68", "CD40"],
+    ["CD68", "CD4"],
+    ["CD68", "CDD14"],
+    ["CD68", "CD206"],
+    ["CD3", "PD1"],
+    ["CD3", "CD7"],
+    ["CD3", "CD45RO"],
+    ["CD3", "ICOS"],
+    ["CD3", "CD8a"],
+    ["CD3", "CD4"],
+    ["LAG3 / LAG33", "PD1"],
+    ["LAG3 / LAG33", "GrzB"],
+    ["LAG3 / LAG33", "ICOS"],
+    ["CD11c", "VISTA"],
+    ["CD11c", "CD40"],
+    ["CD11c", "CD4"],
+    ["CD11c", "CD14"],
+    ["CD11c", "CD206"],
+    ["PD1", "GrzB"],
+    ["PD1", "ICOS"],
+    ["PD1", "CD40"],
+    ["PD1", "CD4"],
+    ["CD7", "CD45RO"],
+    ["CD7", "ICOS"],
+    ["CD7", "CD8a"],
+    ["CD7", "CD4"],
+    ["CD45RO", "CD8a"],
+    ["CD45RO", "CD4"],
+    ["Ecad", "CarbonicAnhydrase"],
+    ["VISTA", "CD40"],
+    ["VISTA", "CD4"],
+    ["CD14", "CD206"],
 ]
 
 
 def load_data():
     # Load data
-    adata = read_h5ad("basel_zuri.h5ad")
-    adata = adata[adata.obs.index.str.contains("Basel"), :]
+    df = pd.concat(
+        {
+            f.name: pd.read_csv(f, index_col="Object")
+            for f in sorted(Path("../data/imc_workflow/intensities").glob("*.csv"))
+        },
+        names=["Image", "Cell"],
+    )
+    adata = AnnData(df, dtype=np.float32)
 
     # Subsample
     seed = 10
@@ -34,15 +101,14 @@ def load_data():
     print(f"max in subsampled adata: {adata.X.max()}")
     print(f"shape of adata: {adata.shape}")
     # Load clusters
-    clusters = pd.read_csv("PG_final_k20.csv").set_index("id")
-    gt_clusters = list(clusters.PhenoGraphBasel[adata.obs_names])
+    clusters = pd.read_csv("../data/imc_workflow/cell_metadata.csv", index_col=0)
+    clusters_index = (
+        df.index.get_level_values("Image").str[:-4]
+        + "_"
+        + df.index.get_level_values("Cell").astype(str)
+    )
+    gt_clusters = clusters.loc[clusters_index, "pg_clusters_corrected"].tolist()
     adata.obs["target"] = gt_clusters
-    adata = adata[
-        :,
-        ~adata.var_names.str.contains(
-            "Rutheni|80ArArArAr80Di|Hg202|I127|In115|208PbPb208Di|Xe126|Xe131|Pb20|Xe13"
-        ),
-    ]
     Y = adata.X.copy()
     Y = np.arcsinh(Y)
     return adata, Y
