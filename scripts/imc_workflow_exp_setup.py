@@ -46,7 +46,7 @@ positive_coexpression_pairs = [
     ["CD68", "PDL1"],
     ["CD68", "CD40"],
     ["CD68", "CD4"],
-    ["CD68", "CDD14"],
+    ["CD68", "CD14"],
     ["CD68", "CD206"],
     ["CD3", "PD1"],
     ["CD3", "CD7"],
@@ -88,27 +88,29 @@ def load_data():
         },
         names=["Image", "Cell"],
     )
-    adata = AnnData(df, dtype=np.float32)
-
-    # Subsample
-    seed = 10
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    random.seed(a=seed)
-
-    to_sample = np.random.choice(adata.shape[0], size=5000, replace=False)
-    adata = adata[to_sample, :]
-    print(f"max in subsampled adata: {adata.X.max()}")
-    print(f"shape of adata: {adata.shape}")
-    # Load clusters
-    clusters = pd.read_csv("../data/imc_workflow/cell_metadata.csv", index_col=0)
-    clusters_index = (
+    df.index = (
         df.index.get_level_values("Image").str[:-4]
         + "_"
         + df.index.get_level_values("Cell").astype(str)
-    )
-    gt_clusters = clusters.loc[clusters_index, "pg_clusters_corrected"].tolist()
-    adata.obs["target"] = gt_clusters
+    ).to_numpy()
+    clusters = pd.read_csv("../data/imc_workflow/cell_metadata.csv", index_col=0)
+
+    df = df.loc[np.isin(df.index, clusters.index), :]
+    clusters = clusters.loc[df.index, :]
+
+    adata = AnnData(df, dtype=np.float32)
+    adata.obs["target"] = clusters["pg_clusters_corrected"].tolist()
+
+    # Subsample
+    seed = 10
+    random.seed(a=seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    adata = adata[np.random.choice(adata.shape[0], size=5000, replace=False), :]
+    print(f"max in subsampled adata: {adata.X.max()}")
+    print(f"shape of adata: {adata.shape}")
+
+    # Load clusters
     Y = adata.X.copy()
     Y = np.arcsinh(Y)
     return adata, Y
