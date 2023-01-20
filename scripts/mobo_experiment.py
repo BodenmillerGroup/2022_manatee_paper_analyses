@@ -17,6 +17,7 @@ import CallbackClass as Clb
 import citeseq_exp_setup as citeseq_setup
 import gp_inference as gp
 import imc_exp_setup as imc_setup
+import imc_workflow_exp_setup as imc_workflow_setup
 import toy_exp_setup as toy_setup
 
 plt.style.use("ggplot")
@@ -70,6 +71,8 @@ def log_settings(
         data1, data2 = memory.cache(imc_setup.load_data)()
     elif experiment == "citeseq":
         data1, data2 = memory.cache(citeseq_setup.load_data)()
+    elif experiment == "imc_workflow":
+        data1, data2 = memory.cache(imc_workflow_setup.load_data)()
 
     set_seed(int(seed))
 
@@ -212,6 +215,59 @@ def log_settings(
                 ucb_scal,
             )
 
+    elif experiment == "imc_workflow":
+        if crossval:
+            dict_list_all_folds = []
+            success_flags_all_folds = []
+            for fold in range(5):
+                # Split
+                (
+                    data1_train,
+                    data2_train,
+                    data1_test,
+                    data2_test,
+                ) = imc_workflow_setup.split_data(data1, data2)
+                mobo_output_dict, success = main_crossval(
+                    data1_train,
+                    data2_train,
+                    data1_test,
+                    data2_test,
+                    fold,
+                    experiment,
+                    callback,
+                    strategy,
+                    x_min,
+                    x_max,
+                    num_train_pts,
+                    optimise_iter,
+                    plot,
+                    ablate,
+                    ucb_scal,
+                )
+                dict_list_all_folds.append(mobo_output_dict)
+                success_flags_all_folds.append(success)
+
+            mobo_output_dict = {k: v for d in dict_list_all_folds for k, v in d.items()}
+            if np.all(success_flags_all_folds):
+                success = True
+            else:
+                success = False
+        else:
+            mobo_output_dict, success = main(
+                data1,
+                data2,
+                experiment,
+                callback,
+                strategy,
+                x_min,
+                x_max,
+                num_train_pts,
+                optimise_iter,
+                plot,
+                ablate,
+                ucb_scal,
+            )
+
     else:
         mobo_output_dict, success = main(
             data1,
@@ -243,6 +299,9 @@ def get_labels(experiment):
 
     elif experiment == "citeseq":
         labels = citeseq_setup.get_labels()
+
+    elif experiment == "imc_workflow":
+        labels = imc_workflow_setup.get_labels()
 
     else:
         raise ValueError(f"Invalid experiment value: {experiment}")
@@ -281,6 +340,8 @@ def main(
         train_y, ari, nmi = imc_setup.true_f(train_x_full_range, data1, data2)
     elif experiment == "citeseq":
         train_y, ari, nmi, hvgs = citeseq_setup.true_f(train_x_full_range, data1, data2)
+    elif experiment == "imc_workflow":
+        train_y, ari, nmi = imc_workflow_setup.true_f(train_x_full_range, data1, data2)
 
     # Run a sequence of mobo experiments (w/different strategies) based on "experiment"
     dicts_list = []
@@ -354,6 +415,10 @@ def main_crossval(
         )
     elif experiment == "citeseq":
         train_y, ari, nmi, hvgs = citeseq_setup.true_f(
+            train_x_full_range, data1_train, data2_train
+        )
+    elif experiment == "imc_workflow":
+        train_y, ari, nmi = imc_workflow_setup.true_f(
             train_x_full_range, data1_train, data2_train
         )
 
@@ -442,6 +507,8 @@ def run_experiment(
         true_f = imc_setup.true_f
     elif experiment == "citeseq":
         true_f = citeseq_setup.true_f
+    elif experiment == "imc_workflow":
+        true_f = imc_workflow_setup.true_f
 
     if strategy == "manatee" or strategy == "random prob":
         if strategy == "random prob" and ablate != "none":
@@ -571,6 +638,8 @@ def run_experiment_crossval(
         true_f = imc_setup.true_f
     elif experiment == "citeseq":
         true_f = citeseq_setup.true_f
+    elif experiment == "imc_workflow":
+        true_f = imc_workflow_setup.true_f
 
     if strategy == "manatee" or strategy == "random prob":
         likelihood, model_class, mll_class, acq_fun, acq_params = set_mobo_params(
